@@ -1,0 +1,48 @@
+; ModuleID = 'main.ll'
+source_filename = "main.ll"
+
+%slice = type { ptr, i64 }
+
+@str.0 = private unnamed_addr constant [34 x i8] c"panic: integer overflow at line 5\0A"
+@strv.0 = private unnamed_addr constant %slice { ptr @str.0, i64 34 }
+
+declare i32 @main()
+
+declare i64 @write(i32, ptr, i64)
+
+declare void @abort()
+
+; Function Attrs: noreturn
+define internal void @sword_panic(ptr %msg, i64 %len) #0 {
+bb0:
+  %w = call i64 @write(i32 2, ptr %msg, i64 %len)
+  call void @abort()
+  unreachable
+}
+
+define i8 @main.ResOne() {
+bb0:
+  %v0 = alloca i8, align 1
+  store i8 0, ptr %v0, align 1
+  %v3 = load i8, ptr %v0, align 1
+  %v4 = add i8 %v3, 1
+  %t5 = call { i8, i1 } @llvm.sadd.with.overflow.i8(i8 %v3, i8 1)
+  %v5 = extractvalue { i8, i1 } %t5, 1
+  %v6 = xor i1 %v5, true
+  br i1 %v6, label %bb2, label %bb1
+
+bb1:                                              ; preds = %bb0
+  call void @sword_panic(ptr @str.0, i64 34)
+  unreachable
+
+bb2:                                              ; preds = %bb0
+  store i8 %v4, ptr %v0, align 1
+  %v9 = load i8, ptr %v0, align 1
+  ret i8 %v9
+}
+
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+declare { i8, i1 } @llvm.sadd.with.overflow.i8(i8, i8) #1
+
+attributes #0 = { noreturn }
+attributes #1 = { nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
