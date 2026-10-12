@@ -39,11 +39,6 @@ void serial_begin(void) {
 int main(void) {
     serial_begin(); // Call once at setup
 
-    // Now you can use printf() anywhere like Serial.print()!
-    DDRB |= (1 << PB0);
-    PORTB |= (1 << PB0);
-
-    
 
     while (1)
         printf("The result was %d\n", res_one());

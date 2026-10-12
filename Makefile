@@ -19,8 +19,14 @@ genO:
 	# llc -mtriple=riscv32-unknown-none-elf -mcpu=generic-rv32 -mattr=+m,+c -filetype=obj main.opt.ll -o main.o
 	cd ./bin && clang --target=avr -mmcu=atmega2560 -c main.opt.ll -o main.o
 
-all: emit-llvm verify optimize genO
+find-ports:
+	ls /dev/*cu*
+
+DEVICE = $(shell ls /dev/cu.usbserial-*)
+
+all: emit-llvm verify optimize genO find-ports
 	avr-gcc -mmcu=atmega2560 arduino.c bin/main.o -o debug.elf
 	avr-objcopy -O ihex -R .eeprom debug.elf debug.hex
-	avrdude -p m2560 -c wiring -P /dev/cu.usbserial-2130 -b 115200 -D -U flash:w:debug.hex:i
-	screen /dev/cu.usbserial-2130 9600
+	avrdude -p m2560 -c wiring -P $(DEVICE) -b 115200 -D -U flash:w:debug.hex:i
+	screen $(DEVICE) 9600
+
