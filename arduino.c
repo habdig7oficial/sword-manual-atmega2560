@@ -1,3 +1,5 @@
+// C Entrypoint I generated it with AI but when reimplementing in sword is better to do from scratch
+
 #define F_CPU 16000000UL
 #include <avr/io.h>
 #include <stdio.h>
@@ -7,7 +9,7 @@
 #define UBRR_VAL ((F_CPU / (16UL * BAUD)) - 1)
 
 // Declare external LLVM IR function
-extern uint8_t res_one(void) __asm__("main.ResOne");
+extern uint8_t res_one(void) __asm__("main.ResOne"); // Links to the sword function in the llvm IR
 
 // Stub for panic required by LLVM IR
 void sword_panic(const char *msg, uint64_t len) {

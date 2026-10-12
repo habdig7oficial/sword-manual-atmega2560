@@ -28,26 +28,24 @@ bb0:
 
 define i8 @main.ResOne() {
 bb0:
-  %v3 = alloca i8, align 1
+  %v1 = alloca i8, align 1
   call void @pin_up(i8 0)
-  call void @delay(double 1.000000e+03)
-  call void @delay(double 1.000000e+03)
-  store i8 1, ptr %v3, align 1
-  %v6 = load i8, ptr %v3, align 1
-  %v7 = add i8 %v6, 1
-  %t8 = call { i8, i1 } @llvm.sadd.with.overflow.i8(i8 %v6, i8 1)
-  %v8 = extractvalue { i8, i1 } %t8, 1
-  %v9 = xor i1 %v8, true
-  br i1 %v9, label %bb2, label %bb1
+  store i8 1, ptr %v1, align 1
+  %v4 = load i8, ptr %v1, align 1
+  %v5 = add i8 %v4, 1
+  %t6 = call { i8, i1 } @llvm.sadd.with.overflow.i8(i8 %v4, i8 1)
+  %v6 = extractvalue { i8, i1 } %t6, 1
+  %v7 = xor i1 %v6, true
+  br i1 %v7, label %bb2, label %bb1
 
 bb1:                                              ; preds = %bb0
   call void @sword_panic(ptr @str.0, i64 35)
   unreachable
 
 bb2:                                              ; preds = %bb0
-  store i8 %v7, ptr %v3, align 1
-  %v12 = load i8, ptr %v3, align 1
-  ret i8 %v12
+  store i8 %v5, ptr %v1, align 1
+  %v10 = load i8, ptr %v1, align 1
+  ret i8 %v10
 }
 
 ; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)

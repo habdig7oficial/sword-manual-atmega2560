@@ -3,14 +3,17 @@ extern func pin_up(pin u8)
 extern func pin_down(pin u8)
 extern func delay(__ms f64)
 
+// Can't acess "std/time" to get delay function sice other parts depends on the OS
+
 func ResOne() i8 {
+    // Pin 0 is PBO that is the 53 pin on Arduino mega
     pin_up(0)
-    delay(1000)
     //pin_down(0)
-    delay(1000)
+
     mut a i8 = 1
     a += 1
     return a
 }
 
+// sugestion make a compiler flags for libs instead of providing a fake stub that will be removed on llvm-ir optimization
 extern func main() i32

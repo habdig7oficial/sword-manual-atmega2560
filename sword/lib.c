@@ -3,6 +3,7 @@
 
 #include <util/delay.h>
 
+/* Acess pins provided by avr-gcc avr/io.h */
 void pin_up(uint8_t pin){
     DDRB |= (1 << pin);
     PORTB |= (1 << pin);
