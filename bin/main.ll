@@ -3,9 +3,12 @@
 %slice = type { ptr, i64 }
 %any = type { i64, double, %slice, i8 }
 
-@str.0 = private unnamed_addr constant [34 x i8] c"panic: integer overflow at line 5\0A"
-@strv.0 = private unnamed_addr constant %slice { ptr @str.0, i64 34 }
+@str.0 = private unnamed_addr constant [35 x i8] c"panic: integer overflow at line 12\0A"
+@strv.0 = private unnamed_addr constant %slice { ptr @str.0, i64 35 }
 
+declare void @pin_up(i8)
+declare void @pin_down(i8)
+declare void @delay(double)
 declare i32 @main()
 
 declare i64 @write(i32, ptr, i64)
@@ -20,21 +23,24 @@ bb0:
 
 define i8 @main.ResOne() {
 bb0:
-  %v0 = alloca i8, align 1
-  store i8 1, ptr %v0, align 1
-  %v3 = load i8, ptr %v0, align 1
-  %v4 = add i8 %v3, 1
-  %t5 = call { i8, i1 } @llvm.sadd.with.overflow.i8(i8 %v3, i8 1)
-  %v5 = extractvalue { i8, i1 } %t5, 1
-  %v6 = xor i1 %v5, true
-  br i1 %v6, label %bb2, label %bb1
+  %v3 = alloca i8, align 1
+  call void @pin_up(i8 0)
+  call void @delay(double 0x408F400000000000)
+  call void @delay(double 0x408F400000000000)
+  store i8 1, ptr %v3, align 1
+  %v6 = load i8, ptr %v3, align 1
+  %v7 = add i8 %v6, 1
+  %t8 = call { i8, i1 } @llvm.sadd.with.overflow.i8(i8 %v6, i8 1)
+  %v8 = extractvalue { i8, i1 } %t8, 1
+  %v9 = xor i1 %v8, true
+  br i1 %v9, label %bb2, label %bb1
 bb1:
-  call void @sword_panic(ptr @str.0, i64 34)
+  call void @sword_panic(ptr @str.0, i64 35)
   unreachable
 bb2:
-  store i8 %v4, ptr %v0, align 1
-  %v9 = load i8, ptr %v0, align 1
-  ret i8 %v9
+  store i8 %v7, ptr %v3, align 1
+  %v12 = load i8, ptr %v3, align 1
+  ret i8 %v12
 }
 
 declare { i8, i1 } @llvm.sadd.with.overflow.i8(i8, i8)

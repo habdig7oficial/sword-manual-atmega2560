@@ -1,6 +1,13 @@
 //extern func inc(a i8) i8
+extern func pin_up(pin u8)
+extern func pin_down(pin u8)
+extern func delay(__ms f64)
 
 func ResOne() i8 {
+    pin_up(0)
+    delay(1000)
+    //pin_down(0)
+    delay(1000)
     mut a i8 = 1
     a += 1
     return a

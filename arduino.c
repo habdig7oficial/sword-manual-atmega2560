@@ -39,7 +39,6 @@ void serial_begin(void) {
 int main(void) {
     serial_begin(); // Call once at setup
 
-
     while (1)
         printf("The result was %d\n", res_one());
     return 0;

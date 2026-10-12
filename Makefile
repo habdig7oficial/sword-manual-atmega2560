@@ -1,12 +1,12 @@
 lib:
-	cd sword && gcc lib.c -c -o ../bin/lib.o
+	cd sword && avr-gcc -mmcu=atmega2560 lib.c -c -o ../bin/lib.o
 stub:
 	cd sword && gcc stub.c -c -o ../bin/stub.o
 sword: lib
 	cd sword && shield main.sword --link lib.o stub.o -o main && ./main
 
-emit-llvm:
-	shield ./sword/ --emit-llvm > ./bin/main.ll
+emit-llvm: lib
+	shield ./sword/ --link lib.o --emit-llvm > ./bin/main.ll
 
 
 verify:
@@ -19,14 +19,12 @@ genO:
 	# llc -mtriple=riscv32-unknown-none-elf -mcpu=generic-rv32 -mattr=+m,+c -filetype=obj main.opt.ll -o main.o
 	cd ./bin && clang --target=avr -mmcu=atmega2560 -c main.opt.ll -o main.o
 
-find-ports:
-	ls /dev/*cu*
 
 DEVICE = $(shell ls /dev/cu.usbserial-*)
 
-all: emit-llvm verify optimize genO find-ports
-	avr-gcc -mmcu=atmega2560 arduino.c bin/main.o -o debug.elf
+all: emit-llvm verify optimize genO
+	avr-gcc -mmcu=atmega2560 arduino.c bin/lib.o bin/main.o -o debug.elf
 	avr-objcopy -O ihex -R .eeprom debug.elf debug.hex
 	avrdude -p m2560 -c wiring -P $(DEVICE) -b 115200 -D -U flash:w:debug.hex:i
-	screen $(DEVICE) 9600
+	#screen $(DEVICE) 9600
 
