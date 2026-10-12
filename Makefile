@@ -5,7 +5,7 @@ stub:
 sword: lib
 	cd sword && shield main.sword --link lib.o stub.o -o main && ./main
 
-emit-llvm: lib stub
+emit-llvm:
 	shield ./sword/ --emit-llvm > ./bin/main.ll
 
 
@@ -20,3 +20,7 @@ genO:
 	cd ./bin && clang --target=avr -mmcu=atmega2560 -c main.opt.ll -o main.o
 
 all: emit-llvm verify optimize genO
+	avr-gcc -mmcu=atmega2560 arduino.c bin/main.o -o debug.elf
+	avr-objcopy -O ihex -R .eeprom debug.elf debug.hex
+	avrdude -p m2560 -c wiring -P /dev/cu.usbserial-2130 -b 115200 -D -U flash:w:debug.hex:i
+	screen /dev/cu.usbserial-2130 9600

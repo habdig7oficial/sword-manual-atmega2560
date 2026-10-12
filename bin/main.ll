@@ -21,7 +21,7 @@ bb0:
 define i8 @main.ResOne() {
 bb0:
   %v0 = alloca i8, align 1
-  store i8 0, ptr %v0, align 1
+  store i8 1, ptr %v0, align 1
   %v3 = load i8, ptr %v0, align 1
   %v4 = add i8 %v3, 1
   %t5 = call { i8, i1 } @llvm.sadd.with.overflow.i8(i8 %v3, i8 1)
